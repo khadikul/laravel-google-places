@@ -53,14 +53,15 @@ in it. That promise is enforced, not just stated.
 1. [Features](#features)
 2. [Requirements](#requirements)
 3. [Installation](#installation)
-4. [Mode A — public places](#mode-a--public-places)
+4. [Artisan commands](#artisan-commands)
+5. [Mode A — public places](#mode-a--public-places)
    - [Google Cloud setup](#google-cloud-setup-mode-a)
    - [Search a business](#search-a-business)
    - [Select a business](#select-a-business)
    - [Display reviews](#display-reviews)
    - [Photos](#photos)
    - [Field masks](#field-masks)
-5. [Mode B — connected business](#mode-b--connected-business)
+6. [Mode B — connected business](#mode-b--connected-business)
    - [Google Cloud setup](#google-cloud-setup-mode-b)
    - [Connecting a Google Business Profile](#connecting-a-google-business-profile)
    - [Choosing locations](#choosing-locations)
@@ -69,20 +70,20 @@ in it. That promise is enforced, not just stated.
    - [Webhook setup](#webhook-setup)
    - [Queue setup](#queue-setup)
    - [Multi-location and multi-account](#multi-location-and-multi-account)
-6. [Scaffolding components](#scaffolding-components)
-7. [Reading reviews back](#reading-reviews-back)
-8. [Database](#database)
-9. [Caching](#caching)
-10. [Events](#events)
-11. [Error handling](#error-handling)
-12. [Security](#security)
-13. [Google's review limitations](#googles-review-limitations)
-14. [Google attribution requirements](#google-attribution-requirements)
-15. [Google billing](#google-billing)
-16. [Troubleshooting](#troubleshooting)
-17. [Testing](#testing)
-18. [Contributing](#contributing)
-19. [License](#license)
+7. [Scaffolding components](#scaffolding-components)
+8. [Reading reviews back](#reading-reviews-back)
+9. [Database](#database)
+10. [Caching](#caching)
+11. [Events](#events)
+12. [Error handling](#error-handling)
+13. [Security](#security)
+14. [Google's review limitations](#googles-review-limitations)
+15. [Google attribution requirements](#google-attribution-requirements)
+16. [Google billing](#google-billing)
+17. [Troubleshooting](#troubleshooting)
+18. [Testing](#testing)
+19. [Contributing](#contributing)
+20. [License](#license)
 
 ---
 
@@ -148,6 +149,40 @@ At any point, check your configuration:
 php artisan google-places:test
 php artisan google-places:test "Torlyx Security"   # makes one real API call
 ```
+
+---
+
+## Artisan commands
+
+| Command | What it does |
+|---|---|
+| `google-places:install` | Publishes the config and migrations, and prints the credentials checklist. Run this first. |
+| `google-places:test` | Checks your configuration and reports what is missing. Pass a search term to make one real API call and prove the key works. Exits non-zero when a required setting is absent, so it is usable in CI or a deploy script. |
+| `google-places:scaffold` | Publishes Tailwind UI components for your frontend stack. See [Scaffolding components](#scaffolding-components). |
+| `google-places:setup` | Prints the `gcloud` commands for your own Pub/Sub topic, and with `--subscribe` registers the notification setting with Google. |
+| `google-places:sync-reviews` | Synchronises reviews for every connected location, or one named location. Queued by default; `--sync` runs it inline. |
+| `google-places:prune-notifications` | Deletes Pub/Sub delivery receipts older than the retention window, so the deduplication ledger does not grow forever. |
+
+Useful flags:
+
+```bash
+php artisan google-places:test "Torlyx Security"      # one live API call
+php artisan google-places:test --no-api               # configuration only
+php artisan google-places:scaffold --dry-run          # list files, write none
+php artisan google-places:sync-reviews --sync         # inline, for debugging
+php artisan google-places:prune-notifications --days=14
+```
+
+Two of these are worth scheduling in Mode B:
+
+```php
+// routes/console.php
+Schedule::command('google-places:sync-reviews')->dailyAt('03:00');
+Schedule::command('google-places:prune-notifications')->weekly();
+```
+
+The daily sync is a safety net. Pub/Sub delivery is reliable but not guaranteed
+forever, and one reconciliation per location per day costs very little.
 
 ---
 
