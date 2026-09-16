@@ -38,6 +38,11 @@ First release.
 - `SyncGoogleReview` and `SyncLocationReviews` queue jobs with per-failure retry
   policies.
 
+**Compatibility**
+
+- Laravel 12 and Laravel 13, on PHP 8.2 or newer. Laravel 13 itself requires
+  PHP 8.3, so the 8.2 floor applies to Laravel 12 installations.
+
 **Infrastructure**
 
 - Five optional migrations with configurable table names and connection.
@@ -48,11 +53,11 @@ First release.
   events.
 - Nine exception types mapped from Google's error envelope, none of which can
   contain a credential.
-- 157 tests covering search, details, review mapping, OAuth, webhook
+- 158 tests covering search, details, review mapping, OAuth, webhook
   authentication, idempotency, caching and error handling. No test contacts
   Google.
-- CI on PHP 8.3 and 8.4, Laravel 13, Ubuntu and Windows, `prefer-lowest` and
-  `prefer-stable`.
+- CI on PHP 8.2, 8.3 and 8.4 across Laravel 12 and 13, Ubuntu and Windows,
+  with `prefer-lowest` and `prefer-stable`.
 
 ### Security
 

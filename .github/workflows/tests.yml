@@ -18,12 +18,22 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: ['8.3', '8.4']
-        laravel: ['13.*']
+        php: ['8.2', '8.3', '8.4']
+        laravel: ['12.*', '13.*']
         stability: [prefer-lowest, prefer-stable]
         include:
+          - laravel: '12.*'
+            testbench: '10.*'
           - laravel: '13.*'
             testbench: '11.*'
+        exclude:
+          # Laravel 13 requires PHP 8.3 or newer.
+          - laravel: '13.*'
+            php: '8.2'
+          # Windows is slow to spin up; the lowest-dependency resolution is
+          # already covered on Linux, so Windows only runs prefer-stable.
+          - os: windows-latest
+            stability: prefer-lowest
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
