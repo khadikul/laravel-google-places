@@ -1,8 +1,8 @@
 # Laravel Google Places
 
 [![Tests](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml)
-[![PHP](https://img.shields.io/badge/php-8.3%2B-777bb4.svg)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/laravel-13.x-ff2d20.svg)](https://laravel.com/)
+[![PHP](https://img.shields.io/badge/php-8.2%2B-777bb4.svg)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/laravel-12.x%20%7C%2013.x-ff2d20.svg)](https://laravel.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 Search Google for a business, show its rating and reviews, and — if you own the
@@ -104,7 +104,7 @@ in it. That promise is enforced, not just stated.
   configurable and documented.
 - **Caching** — with targeted invalidation when a review changes.
 - **Artisan tooling** — install, setup, diagnose, sync, prune.
-- **157 tests**, no network access required to run them.
+- **158 tests**, no network access required to run them.
 
 ---
 
@@ -112,10 +112,13 @@ in it. That promise is enforced, not just stated.
 
 | | |
 |---|---|
-| PHP | 8.3 or newer |
-| Laravel | 13.x |
+| PHP | 8.2 or newer |
+| Laravel | 12.x or 13.x |
 | Extensions | `json`, `openssl` |
 | Mode B extras | A database, a queue worker, and a Google Cloud project with approved Business Profile API access |
+
+Laravel 13 itself requires PHP 8.3, so the PHP 8.2 floor applies to Laravel 12
+installations. Both combinations are covered by CI.
 
 ---
 
@@ -1013,7 +1016,7 @@ Your cache driver is `array` or `file`. Use `redis`, `memcached`, `database` or
 composer test
 ```
 
-157 tests, 900+ assertions. **No test ever contacts Google** — everything runs
+158 tests, 900+ assertions. **No test ever contacts Google** — everything runs
 through `Http::fake()` and `Queue::fake()` against an in-memory SQLite database.
 
 Coverage includes: search success, empty results and every mapped error status;
@@ -1030,8 +1033,8 @@ composer lint     # check formatting
 composer format   # fix it
 ```
 
-CI runs on PHP 8.3 and 8.4, Laravel 13, on Ubuntu and Windows, with both
-`prefer-lowest` and `prefer-stable`.
+CI runs on PHP 8.2, 8.3 and 8.4 across Laravel 12 and 13, on Ubuntu and
+Windows, with both `prefer-lowest` and `prefer-stable`.
 
 ---
 
