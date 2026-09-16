@@ -1,0 +1,73 @@
+{
+    "name": "khadikul/laravel-google-places",
+    "description": "Laravel integration for the Google Places API (New) and Google Business Profile reviews, with OAuth, Pub/Sub notifications and automatic review synchronisation. Uses your own Google credentials only.",
+    "keywords": [
+        "laravel",
+        "google",
+        "google-places",
+        "places-api",
+        "google-business-profile",
+        "reviews",
+        "pubsub"
+    ],
+    "homepage": "https://github.com/khadikul/laravel-google-places",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Khadikul Islam",
+            "email": "khadikul@bitekservices.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "illuminate/bus": "^13.0",
+        "illuminate/cache": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/queue": "^13.0",
+        "illuminate/routing": "^13.0",
+        "illuminate/support": "^13.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.20",
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Khadikul\\GooglePlaces\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Khadikul\\GooglePlaces\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-text",
+        "format": "vendor/bin/pint",
+        "lint": "vendor/bin/pint --test"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Khadikul\\GooglePlaces\\GooglePlacesServiceProvider"
+            ],
+            "aliases": {
+                "GooglePlaces": "Khadikul\\GooglePlaces\\Facades\\GooglePlaces"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

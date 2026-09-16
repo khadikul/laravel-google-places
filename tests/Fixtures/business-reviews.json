@@ -1,0 +1,33 @@
+{
+    "reviews": [
+        {
+            "name": "accounts/111/locations/222/reviews/AbC-review-1",
+            "reviewId": "AbC-review-1",
+            "reviewer": {
+                "profilePhotoUrl": "https://lh3.googleusercontent.com/a/owner=s120",
+                "displayName": "Rafiq Hasan",
+                "isAnonymous": false
+            },
+            "starRating": "FIVE",
+            "comment": "Excellent service, would recommend.",
+            "createTime": "2026-08-01T09:30:00.000Z",
+            "updateTime": "2026-08-01T09:30:00.000Z",
+            "reviewReply": {
+                "comment": "Thank you!",
+                "updateTime": "2026-08-02T11:00:00.000Z"
+            }
+        },
+        {
+            "name": "accounts/111/locations/222/reviews/AbC-review-2",
+            "reviewId": "AbC-review-2",
+            "reviewer": {
+                "isAnonymous": true
+            },
+            "starRating": "TWO",
+            "createTime": "2026-06-15T14:00:00.000Z",
+            "updateTime": "2026-06-15T14:00:00.000Z"
+        }
+    ],
+    "averageRating": 4.2,
+    "totalReviewCount": 2
+}

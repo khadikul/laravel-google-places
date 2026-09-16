@@ -1,0 +1,99 @@
+name: tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        php: ['8.3', '8.4']
+        laravel: ['13.*']
+        stability: [prefer-lowest, prefer-stable]
+        include:
+          - laravel: '13.*'
+            testbench: '11.*'
+
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          # sqlite is what the test suite runs against; openssl backs the
+          # Pub/Sub OIDC verification tests.
+          extensions: json, openssl, sqlite3, pdo_sqlite, mbstring, curl
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.laravel }}-${{ matrix.stability }}
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+
+      - name: Run tests
+        run: composer test
+
+  code-style:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    name: Code style
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: json, openssl, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Check formatting
+        run: composer lint
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    name: Dependency audit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Audit
+        run: composer audit --no-interaction

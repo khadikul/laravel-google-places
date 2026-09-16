@@ -1,0 +1,29 @@
+{
+    "places": [
+        {
+            "id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+            "formattedAddress": "48 Pirrama Rd, Pyrmont NSW 2009, Australia",
+            "location": {
+                "latitude": -33.866489,
+                "longitude": 151.1958561
+            },
+            "rating": 4.5,
+            "googleMapsUri": "https://maps.google.com/?cid=10281119596374313554",
+            "userRatingCount": 1234,
+            "businessStatus": "OPERATIONAL",
+            "displayName": {
+                "text": "Google Sydney",
+                "languageCode": "en"
+            }
+        },
+        {
+            "id": "ChIJP3Sa8ziYEmsRUKgyFmh9AQM",
+            "formattedAddress": "1 Kent St, Millers Point NSW 2000, Australia",
+            "displayName": {
+                "text": "Another Business",
+                "languageCode": "en"
+            }
+        }
+    ],
+    "nextPageToken": "AeCrKTtSecondPageToken"
+}
