@@ -13,6 +13,7 @@ use Khadikul\GooglePlaces\Clients\BusinessProfileApiClient;
 use Khadikul\GooglePlaces\Clients\PlacesApiClient;
 use Khadikul\GooglePlaces\Console\InstallCommand;
 use Khadikul\GooglePlaces\Console\PruneNotificationsCommand;
+use Khadikul\GooglePlaces\Console\ScaffoldCommand;
 use Khadikul\GooglePlaces\Console\SetupCommand;
 use Khadikul\GooglePlaces\Console\SyncReviewsCommand;
 use Khadikul\GooglePlaces\Console\TestCommand;
@@ -182,6 +183,7 @@ class GooglePlacesServiceProvider extends ServiceProvider
         $this->commands([
             InstallCommand::class,
             SetupCommand::class,
+            ScaffoldCommand::class,
             TestCommand::class,
             SyncReviewsCommand::class,
             PruneNotificationsCommand::class,

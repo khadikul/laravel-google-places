@@ -38,6 +38,16 @@ First release.
 - `SyncGoogleReview` and `SyncLocationReviews` queue jobs with per-failure retry
   policies.
 
+**Scaffolding**
+
+- `google-places:scaffold` publishes Tailwind components for Blade, Livewire or
+  Inertia with React, Vue or Svelte, detecting the stack from composer.json and
+  package.json. These are stubs copied into the application, not package views,
+  so the package still registers no view namespace.
+- Published components carry the reviewer and photo attribution Google requires,
+  and are null-safe against anonymous reviewers, star-only reviews and narrow
+  field masks.
+
 **Compatibility**
 
 - Laravel 12 and Laravel 13, on PHP 8.2 or newer. Laravel 13 itself requires
@@ -53,7 +63,7 @@ First release.
   events.
 - Nine exception types mapped from Google's error envelope, none of which can
   contain a credential.
-- 165 tests covering search, details, review mapping, OAuth, webhook
+- 180 tests covering search, details, review mapping, OAuth, webhook
   authentication, idempotency, caching and error handling. No test contacts
   Google.
 - CI on PHP 8.2, 8.3 and 8.4 across Laravel 12 and 13, Ubuntu and Windows,

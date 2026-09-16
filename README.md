@@ -69,19 +69,20 @@ in it. That promise is enforced, not just stated.
    - [Webhook setup](#webhook-setup)
    - [Queue setup](#queue-setup)
    - [Multi-location and multi-account](#multi-location-and-multi-account)
-6. [Reading reviews back](#reading-reviews-back)
-7. [Database](#database)
-8. [Caching](#caching)
-9. [Events](#events)
-10. [Error handling](#error-handling)
-11. [Security](#security)
-12. [Google's review limitations](#googles-review-limitations)
-13. [Google attribution requirements](#google-attribution-requirements)
-14. [Google billing](#google-billing)
-15. [Troubleshooting](#troubleshooting)
-16. [Testing](#testing)
-17. [Contributing](#contributing)
-18. [License](#license)
+6. [Scaffolding components](#scaffolding-components)
+7. [Reading reviews back](#reading-reviews-back)
+8. [Database](#database)
+9. [Caching](#caching)
+10. [Events](#events)
+11. [Error handling](#error-handling)
+12. [Security](#security)
+13. [Google's review limitations](#googles-review-limitations)
+14. [Google attribution requirements](#google-attribution-requirements)
+15. [Google billing](#google-billing)
+16. [Troubleshooting](#troubleshooting)
+17. [Testing](#testing)
+18. [Contributing](#contributing)
+19. [License](#license)
 
 ---
 
@@ -103,11 +104,11 @@ in it. That promise is enforced, not just stated.
 - **Field masks** — required by the Places API and directly tied to your bill;
   configurable and documented.
 - **Caching** — with targeted invalidation when a review changes.
-- **Artisan tooling** — install, setup, diagnose, sync, prune.
+- **Artisan tooling** — install, scaffold, setup, diagnose, sync, prune.
 - **Starter-kit agnostic** — no views, no assets, no frontend dependencies.
   Blade, Livewire and Inertia (React/Vue/Svelte) all work; the Inertia redirect
   protocol is handled for you.
-- **165 tests**, no network access required to run them.
+- **180 tests**, no network access required to run them.
 
 ---
 
@@ -387,6 +388,15 @@ The package ships no views, no assets and no frontend dependencies, so the API
 is identical under Blade, Livewire, Inertia (React, Vue or Svelte) or a headless
 backend. Only the connect link needs care, because it leaves your site for
 accounts.google.com and an XHR cannot follow a cross-origin redirect.
+
+If you would rather not build the UI yourself, publish a set of Tailwind
+components for your stack:
+
+```bash
+php artisan google-places:scaffold
+```
+
+See [Scaffolding components](#scaffolding-components) for what it publishes.
 
 **Blade** — a plain anchor, as above.
 
@@ -694,6 +704,62 @@ $connection->owner()->associate($team);
 `GooglePlaces::oauth()->connection($id)` selects one explicitly; most methods
 take a `$connection` argument. Without one, the most recent active connection is
 used.
+
+---
+
+## Scaffolding components
+
+Publishing a starter UI is optional. The package itself still registers no
+views: `google-places:scaffold` copies **stubs** into your application, exactly
+as Breeze does. Once published the files are yours, and the package never reads,
+overrides or updates them again.
+
+```bash
+php artisan google-places:scaffold                 # detects your stack
+php artisan google-places:scaffold --stack=vue     # or name it
+php artisan google-places:scaffold --dry-run       # list without writing
+php artisan google-places:scaffold --force         # overwrite existing files
+```
+
+### Detection
+
+| Stack | Detected from |
+|---|---|
+| `react` / `vue` / `svelte` | `@inertiajs/react`, `@inertiajs/vue3` or `@inertiajs/svelte` in `package.json` |
+| `livewire` | `livewire/livewire` in `composer.json` |
+| `blade` | the fallback |
+
+Inertia wins when an application has both installed, because the components then
+have to be JavaScript. Detection is reported before anything is written, along
+with whether Tailwind was found.
+
+### What you get
+
+| Component | Purpose |
+|---|---|
+| `Rating` | Star rating. Renders "No rating yet" rather than zero stars when Google returns none. |
+| `ReviewCard` | One review, with the attribution Google requires. Handles anonymous reviewers and star-only reviews. |
+| `ReviewsWidget` | The public-facing block for a marketing page. Reads your database first, falls back to the API, and keeps the page up if Google is down. |
+| `PlaceCard` | A search result. Every field is null-safe against narrow field masks. |
+| `ConnectGoogleButton` | The OAuth entry point, with the correct link handling for the stack. |
+| `LocationManager` | The admin screen: accounts, locations, connect and sync. |
+
+Plus ready-made Search, Show and Admin pages, and a `GooglePlacesPageController`
+with the routes to register written in its docblock.
+
+Livewire additionally gets `BusinessSearch`, `ReviewList` and `LocationManager`
+components, and reuses the Blade presentational components rather than
+duplicating the markup.
+
+The markup is Tailwind, matching Laravel's own starter kits. Without Tailwind the
+components render unstyled — the command warns you if it cannot find it.
+
+### Attribution is built in
+
+The published components already do what Google's terms require: they show the
+reviewer's name and photo as given, never modify review text, credit photo
+authors, and link back to Google. Keep those parts if you restyle.
+
 
 ---
 
@@ -1079,7 +1145,7 @@ Your cache driver is `array` or `file`. Use `redis`, `memcached`, `database` or
 composer test
 ```
 
-165 tests, 900+ assertions. **No test ever contacts Google** — everything runs
+180 tests, 1000+ assertions. **No test ever contacts Google** — everything runs
 through `Http::fake()` and `Queue::fake()` against an in-memory SQLite database.
 
 Coverage includes: search success, empty results and every mapped error status;

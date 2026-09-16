@@ -1,0 +1,37 @@
+@props([
+    'place',
+    'href' => null,
+])
+
+<article {{ $attributes->merge(['class' => 'rounded-xl border border-gray-200 bg-white p-5 transition hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600']) }}>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        @if ($href)
+            <a href="{{ $href }}" class="hover:underline">{{ $place->name() ?? 'Unnamed place' }}</a>
+        @else
+            {{ $place->name() ?? 'Unnamed place' }}
+        @endif
+    </h3>
+
+    {{-- A narrow field mask means most of this can legitimately be null. --}}
+    @if (filled($place->address))
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $place->address }}</p>
+    @endif
+
+    <x-google-places.rating :rating="$place->rating()" :count="$place->reviewCount()" class="mt-2.5" />
+
+    <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
+        @if (filled($place->primaryType))
+            <span class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                {{ $place->primaryType }}
+            </span>
+        @endif
+
+        @if (! $place->isOperational())
+            <span class="rounded-full bg-red-50 px-2 py-0.5 text-red-700 dark:bg-red-900/40 dark:text-red-300">
+                {{ str($place->businessStatus)->headline() }}
+            </span>
+        @endif
+    </div>
+
+    {{ $slot }}
+</article>
