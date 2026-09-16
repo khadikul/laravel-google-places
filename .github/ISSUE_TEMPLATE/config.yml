@@ -1,0 +1,18 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/khadikul/laravel-google-places/security/policy
+    about: Report privately, never as a public issue. See SECURITY.md.
+
+  - name: Google API access, quota or billing
+    url: https://developers.google.com/my-business/content/prereqs
+    about: >
+      Business Profile API approval, 0 QPM quota and billing are handled by
+      Google, not by this package. Nothing here can change them.
+
+  - name: Only five reviews are returned
+    url: https://github.com/khadikul/laravel-google-places#googles-review-limitations
+    about: >
+      That is a documented hard limit of the public Places API, with no
+      pagination. Connecting a Business Profile returns all of them.

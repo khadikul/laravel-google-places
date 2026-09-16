@@ -1022,7 +1022,7 @@ are not equivalent:
 
 | | Places API (public) | Business Profile (connected) |
 |---|---|---|
-| Reviews returned | A small subset chosen by Google | All of them |
+| Reviews returned | **At most 5**, chosen by Google | All of them |
 | Pagination | None | Yes, 50 per page |
 | Requires OAuth | No | Yes |
 | Requires API approval | No | Yes, and it takes time |
@@ -1032,9 +1032,10 @@ are not equivalent:
 
 Specifically:
 
-- **The public API does not return every review.** It returns a handful that
-  Google selects, with no way to page further. If you need all of them, you need
-  Mode B, which means you need to own the business.
+- **The public API returns at most five reviews.** That is a documented hard
+  limit with no pagination parameter, and it has not moved in years. A business
+  with 200 reviews still returns five. If you need all of them you need Mode B,
+  which means you need to own or manage the business.
 - **"Real-time" means real-time only once Pub/Sub is configured.** Without a
   topic, an IAM binding, a push subscription and a running queue worker, nothing
   is automatic. Use `google-places:sync-reviews` on a schedule instead.

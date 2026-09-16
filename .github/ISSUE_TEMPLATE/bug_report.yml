@@ -1,0 +1,89 @@
+name: Bug report
+description: Something does not behave the way the documentation says it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please run `php artisan google-places:test` — it catches
+        most configuration problems and tells you what is missing.
+
+        **Never paste an API key, OAuth client secret or token into an issue.**
+        Redact them. If you already pasted one somewhere public, rotate it now.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The smallest code that shows the problem.
+      render: php
+    validations:
+      required: true
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel version
+      placeholder: "13.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "8.3.12"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Which mode
+      options:
+        - Mode A - public places, API key only
+        - Mode B - connected business, OAuth
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output of google-places:test
+      description: Run it with --no-api if you would rather not make a live call. Redact anything sensitive.
+      render: shell
+
+  - type: textarea
+    id: errors
+    attributes:
+      label: Error message or stack trace
+      description: Redact any credential before pasting.
+      render: shell
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have removed every API key, token and secret from this report.
+          required: true
+        - label: I am using my own Google Cloud project and credentials.
+          required: true

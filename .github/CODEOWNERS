@@ -1,0 +1,29 @@
+# Every change needs the owner's review.
+#
+# GitHub requests a review from the owners listed here automatically, and the
+# branch ruleset requires that review before anything reaches main.
+
+* @khadikul
+
+# Areas where a mistake is expensive, listed separately so they are obvious in
+# the review UI even though the owner is the same.
+
+# Credential handling and token storage.
+/src/Services/OAuthService.php          @khadikul
+/src/Models/GoogleBusinessConnection.php @khadikul
+
+# The public webhook and its authentication.
+/src/Http/Middleware/VerifyPubSubToken.php @khadikul
+/src/Support/OpenIdTokenVerifier.php       @khadikul
+/src/Http/Controllers/WebhookController.php @khadikul
+
+# Schema changes are effectively irreversible once released.
+/database/migrations/                   @khadikul
+
+# The guarantee that the package ships no credentials and contacts nobody but
+# Google. Changing this test means changing the promise.
+/tests/Unit/ZeroVendorInfrastructureTest.php @khadikul
+
+# Release and CI plumbing.
+/.github/                               @khadikul
+/composer.json                          @khadikul

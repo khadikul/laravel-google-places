@@ -118,3 +118,31 @@ jobs:
 
       - name: Audit
         run: composer audit --no-interaction
+
+  # A single stable check for branch protection to require.
+  #
+  # The test matrix job names contain the PHP and Laravel versions, so they
+  # change whenever the matrix changes and any protection rule naming them
+  # directly would silently stop being enforced. This gate depends on all three
+  # jobs and is the only name the ruleset has to know.
+  ci:
+    runs-on: ubuntu-latest
+    name: CI passed
+    needs: [test, code-style, security]
+    if: always()
+
+    steps:
+      - name: Verify every job succeeded
+        run: |
+          echo "tests:      ${{ needs.test.result }}"
+          echo "code style: ${{ needs.code-style.result }}"
+          echo "audit:      ${{ needs.security.result }}"
+
+          if [ "${{ needs.test.result }}" != "success" ] \
+          || [ "${{ needs.code-style.result }}" != "success" ] \
+          || [ "${{ needs.security.result }}" != "success" ]; then
+            echo "::error::One or more required jobs did not succeed."
+            exit 1
+          fi
+
+          echo "All required jobs succeeded."
