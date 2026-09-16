@@ -104,7 +104,10 @@ in it. That promise is enforced, not just stated.
   configurable and documented.
 - **Caching** — with targeted invalidation when a review changes.
 - **Artisan tooling** — install, setup, diagnose, sync, prune.
-- **158 tests**, no network access required to run them.
+- **Starter-kit agnostic** — no views, no assets, no frontend dependencies.
+  Blade, Livewire and Inertia (React/Vue/Svelte) all work; the Inertia redirect
+  protocol is handled for you.
+- **165 tests**, no network access required to run them.
 
 ---
 
@@ -377,6 +380,66 @@ Two routes are registered for you:
 ```blade
 <a href="{{ route('google-places.oauth.redirect') }}">Connect Google Business</a>
 ```
+
+#### Starter kits
+
+The package ships no views, no assets and no frontend dependencies, so the API
+is identical under Blade, Livewire, Inertia (React, Vue or Svelte) or a headless
+backend. Only the connect link needs care, because it leaves your site for
+accounts.google.com and an XHR cannot follow a cross-origin redirect.
+
+**Blade** — a plain anchor, as above.
+
+**Livewire** — a plain anchor too. Do **not** put `wire:navigate` on it: that
+turns the click into a fetch, which cannot follow the redirect to Google.
+
+```blade
+<a href="{{ route('google-places.oauth.redirect') }}">Connect Google Business</a>
+```
+
+To start the flow from a component method, redirect away rather than rendering:
+
+```php
+public function connect()
+{
+    return redirect()->away(GooglePlaces::oauth()->authorizationUrl());
+}
+```
+
+**Inertia** — handled for you. The redirect route answers an Inertia request
+with `409` and `X-Inertia-Location`, which is Inertia's protocol for leaving the
+app, so an ordinary `<Link>` works:
+
+```jsx
+import { Link } from '@inertiajs/react'
+
+<Link href={route('google-places.oauth.redirect')}>Connect Google Business</Link>
+```
+
+A plain `<a href>` works in Inertia as well, and is the simplest option.
+
+**Reading the result.** The callback flashes `google_places_status`
+(`connected` or `failed`) and `google_places_error` to the session. Blade and
+Livewire read these with `session('google_places_status')`. For Inertia, share
+them in `HandleInertiaRequests`:
+
+```php
+public function share(Request $request): array
+{
+    return array_merge(parent::share($request), [
+        'flash' => [
+            'googleStatus' => fn () => $request->session()->get('google_places_status'),
+            'googleError' => fn () => $request->session()->get('google_places_error'),
+        ],
+    ]);
+}
+```
+
+**Headless / SPA on another domain.** The OAuth state is held in the session, so
+the two OAuth routes need a session. Keep them on the `web` middleware group
+(the default) and open them in a normal browser window rather than through your
+API client. Everything else — search, place details, reviews, sync — is
+stateless and works from any stack.
 
 > **Protect these routes.** Authorising a business profile is an administrative
 > action. Add your own auth middleware:
@@ -1016,7 +1079,7 @@ Your cache driver is `array` or `file`. Use `redis`, `memcached`, `database` or
 composer test
 ```
 
-158 tests, 900+ assertions. **No test ever contacts Google** — everything runs
+165 tests, 900+ assertions. **No test ever contacts Google** — everything runs
 through `Http::fake()` and `Queue::fake()` against an in-memory SQLite database.
 
 Coverage includes: search success, empty results and every mapped error status;

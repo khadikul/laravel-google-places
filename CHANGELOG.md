@@ -53,7 +53,7 @@ First release.
   events.
 - Nine exception types mapped from Google's error envelope, none of which can
   contain a credential.
-- 158 tests covering search, details, review mapping, OAuth, webhook
+- 165 tests covering search, details, review mapping, OAuth, webhook
   authentication, idempotency, caching and error handling. No test contacts
   Google.
 - CI on PHP 8.2, 8.3 and 8.4 across Laravel 12 and 13, Ubuntu and Windows,

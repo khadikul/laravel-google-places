@@ -7,9 +7,11 @@ namespace Khadikul\GooglePlaces\Http\Controllers;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Khadikul\GooglePlaces\Exceptions\GooglePlacesException;
 use Khadikul\GooglePlaces\Services\OAuthService;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * The application's own OAuth endpoints.
@@ -28,10 +30,25 @@ class OAuthController extends Controller
 
     /**
      * Send the browser to Google's consent screen.
+     *
+     * Inertia fetches routes over XHR, and an XHR cannot follow a redirect to
+     * another origin: the browser would try to load accounts.google.com inside
+     * the request and fail CORS, leaving the user on a dead button. Inertia's
+     * protocol for leaving the application is a 409 carrying X-Inertia-Location,
+     * which the client turns into a hard visit.
+     *
+     * Detected by header, so this costs no dependency and is inert in a Blade or
+     * Livewire application.
      */
-    public function redirect(Request $request): RedirectResponse
+    public function redirect(Request $request): SymfonyResponse
     {
-        return new RedirectResponse($this->oauth->authorizationUrl());
+        $url = $this->oauth->authorizationUrl();
+
+        if ($request->hasHeader('X-Inertia')) {
+            return new Response('', SymfonyResponse::HTTP_CONFLICT, ['X-Inertia-Location' => $url]);
+        }
+
+        return new RedirectResponse($url);
     }
 
     /**
