@@ -36,23 +36,34 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           # sqlite is what the test suite runs against; openssl backs the
-          # Pub/Sub OIDC verification tests.
-          extensions: json, openssl, sqlite3, pdo_sqlite, mbstring, curl
+          # Pub/Sub OIDC verification tests. fileinfo is required by
+          # league/flysystem-local via laravel/framework — it is enabled by
+          # default on Linux but not on the Windows runner.
+          extensions: json, openssl, sqlite3, pdo_sqlite, mbstring, curl, fileinfo
           coverage: none
           ini-values: error_reporting=E_ALL
+
+      # Composer's cache lives somewhere different on Windows, so ask Composer
+      # rather than hard-coding a Linux path.
+      - name: Locate Composer cache
+        id: composer-cache
+        shell: bash
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Composer packages
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.laravel }}-${{ matrix.stability }}
 
       - name: Install dependencies
+        shell: bash
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Run tests
+        shell: bash
         run: composer test
 
   code-style:
