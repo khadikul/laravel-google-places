@@ -1,8 +1,9 @@
 # Laravel Google Places
 
-[![Tests](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml/badge.svg)](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml)
-[![Latest Version](https://img.shields.io/packagist/v/khadikul/laravel-google-places.svg)](https://packagist.org/packages/khadikul/laravel-google-places)
-[![License](https://img.shields.io/packagist/l/khadikul/laravel-google-places.svg)](LICENSE.md)
+[![Tests](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/khadikul/laravel-google-places/actions/workflows/tests.yml)
+[![PHP](https://img.shields.io/badge/php-8.3%2B-777bb4.svg)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/laravel-13.x-ff2d20.svg)](https://laravel.com/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
 
 Search Google for a business, show its rating and reviews, and — if you own the
 business — keep your Google reviews synchronised into your own database
